@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>QumScan — Результат анализа</title>
+
+    {% load static %}
+
+    <link
+        rel="stylesheet"
+        href="{% static 'monitoring/css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="brand">
+
+        <span class="brand-icon">◉</span>
+
+        QUMSCAN
+
+    </div>
+
+    <a
+        class="back"
+        href="/"
+    >
+
+        ← НОВЫЙ АНАЛИЗ
+
+    </a>
+
+</nav>
+
+
+<main class="container">
+
+
+    <section class="result-header">
+
+        <div>
+
+            <p class="step">
+
+                АНАЛИЗ #{{ analysis.id }}
+
+            </p>
+
+            <h1>
+
+                Результат анализа
+
+            </h1>
+
+        </div>
+
+
+        <div class="status">
+
+            {% if analysis.status == "completed" %}
+                ЗАВЕРШЕНО
+            {% elif analysis.status == "processing" %}
+                ОБРАБОТКА
+            {% elif analysis.status == "failed" %}
+                ОШИБКА
+            {% else %}
+                ОЖИДАНИЕ
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- ДО / ПОСЛЕ -->
+
+    <section class="image-comparison">
+
+
+        <div class="image-panel">
+
+            <span>
+
+                ДО
+
+            </span>
+
+            <img
+                src="{{ analysis.before_image.url }}"
+                alt="Изображение до"
+            >
+
+        </div>
+
+
+        <div class="image-panel">
+
+            <span>
+
+                ПОСЛЕ
+
+            </span>
+
+            <img
+                src="{{ analysis.after_image.url }}"
+                alt="Изображение после"
+            >
+
+        </div>
+
+
+    </section>
+
+
+    <!-- РЕЗУЛЬТАТ -->
+
+    {% if analysis.status == "completed" %}
+
+
+    <section style="margin-bottom: 25px;">
+
+        <div class="image-panel">
+
+            <span>
+
+                ОБНАРУЖЕННЫЕ ИЗМЕНЕНИЯ
+
+            </span>
+
+            <img
+                src="{{ analysis.result_image.url }}"
+                alt="Обнаруженные изменения"
+            >
+
+        </div>
+
+    </section>
+
+
+    <section class="result-card">
+
+        <p class="step">
+
+            АНАЛИЗ ИЗМЕНЕНИЙ
+
+        </p>
+
+        <h2>
+
+            {{ analysis.change_percentage }}%
+            изменения поверхности
+
+        </h2>
+
+
+        <p style="margin-top: 15px;">
+
+            QumScan сравнил изображения «ДО» и «ПОСЛЕ»
+            и обнаружил значительные визуальные изменения
+            земной поверхности.
+
+        </p>
+
+
+        <div
+            style="
+                margin-top: 25px;
+                padding: 18px;
+                border-radius: 12px;
+                background: rgba(255, 90, 90, 0.08);
+                border: 1px solid rgba(255, 90, 90, 0.25);
+                font-weight: 700;
+            "
+        >
+
+            ⚠ ТРЕБУЕТ ПРОВЕРКИ
+
+        </div>
+
+
+        <div
+            style="
+                margin-top: 20px;
+                padding: 18px;
+                border-radius: 12px;
+                background: rgba(76, 224, 162, 0.05);
+                border: 1px solid rgba(76, 224, 162, 0.18);
+            "
+        >
+
+            <p
+                style="
+                    color: #4ce0a2;
+                    font-weight: 700;
+                    margin-bottom: 8px;
+                "
+            >
+
+                ИНТЕРПРЕТАЦИЯ QUMSCAN
+
+            </p>
+
+
+            <p>
+
+                Между двумя выбранными датами
+                обнаружено значительное изменение поверхности.
+
+            </p>
+
+
+            <p style="margin-top: 8px;">
+
+                Этот результат не подтверждает незаконную деятельность.
+                Обнаруженный участок рекомендуется проверить
+                специалисту или инспектору.
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ОШИБКА -->
+
+    {% elif analysis.status == "failed" %}
+
+
+    <section class="result-card">
+
+        <p class="step">
+
+            ОШИБКА АНАЛИЗА
+
+        </p>
+
+        <h2>
+
+            Не удалось выполнить анализ
+
+        </h2>
+
+        <p style="margin-top: 15px;">
+
+            QumScan не смог обработать выбранную пару изображений.
+
+        </p>
+
+        <p style="margin-top: 10px;">
+
+            Попробуйте загрузить два корректных изображения
+            одной и той же территории.
+
+        </p>
+
+    </section>
+
+
+    <!-- ОБРАБОТКА -->
+
+    {% else %}
+
+
+    <section class="result-card">
+
+        <p class="step">
+
+            ОБРАБОТКА
+
+        </p>
+
+        <h2>
+
+            QumScan анализирует изображения...
+
+        </h2>
+
+        <p style="margin-top: 15px;">
+
+            Пожалуйста, подождите.
+            Система сравнивает изображения «ДО» и «ПОСЛЕ».
+
+        </p>
+
+    </section>
+
+
+    {% endif %}
+
+
+</main>
+
+
+</body>
+
+</html>

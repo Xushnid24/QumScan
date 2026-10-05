@@ -1,0 +1,1659 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        QumScan — Satellite Surface Monitoring
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'monitoring/css/style.css' %}"
+    >
+
+    <style>
+
+        :root {
+            --bg: #06100f;
+            --bg-soft: #0a1716;
+            --card: rgba(16, 34, 31, 0.78);
+            --card-strong: #10211f;
+            --line: rgba(112, 255, 199, 0.12);
+            --line-strong: rgba(77, 224, 162, 0.28);
+            --green: #4de0a2;
+            --green-soft: #81ebbd;
+            --text: #f4f8f7;
+            --muted: #8da7a1;
+            --muted-2: #657d78;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(
+                    circle at 85% 8%,
+                    rgba(22, 90, 97, 0.25),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 20% 70%,
+                    rgba(31, 108, 78, 0.10),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+            font-family:
+                Inter,
+                Arial,
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .page-shell {
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            background: rgba(5, 16, 15, 0.88);
+
+            backdrop-filter: blur(18px);
+
+            border-bottom:
+                1px solid var(--line);
+        }
+
+        .nav-inner {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+
+            min-height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 30px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            text-decoration: none;
+
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            font-size: 19px;
+        }
+
+        .brand-mark {
+            width: 14px;
+            height: 14px;
+
+            border: 2px solid var(--green);
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 18px rgba(77, 224, 162, 0.45);
+
+            position: relative;
+        }
+
+        .brand-mark::after {
+            content: "";
+
+            position: absolute;
+            inset: 3px;
+
+            background: var(--green);
+            border-radius: 50%;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+
+            gap: 26px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+
+            font-size: 13px;
+            color: var(--muted);
+
+            transition: 0.2s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--text);
+        }
+
+        .nav-menu .nav-primary {
+            color: var(--green);
+
+            border:
+                1px solid var(--line-strong);
+
+            border-radius: 9px;
+
+            padding: 10px 15px;
+        }
+
+        .nav-menu .nav-primary:hover {
+            background:
+                rgba(77, 224, 162, 0.08);
+        }
+
+        /* =========================
+           LAYOUT
+        ========================= */
+
+        .main {
+            width: min(1180px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .section {
+            padding: 88px 0 0;
+        }
+
+        .eyebrow {
+            color: var(--green);
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 2.2px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            margin: 0;
+
+            font-size: clamp(
+                30px,
+                4vw,
+                46px
+            );
+
+            line-height: 1.08;
+            letter-spacing: -1.4px;
+        }
+
+        .section-copy {
+            max-width: 720px;
+
+            margin-top: 14px;
+
+            color: var(--muted);
+
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            min-height: 690px;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.12fr)
+                minmax(360px, 0.88fr);
+
+            gap: 72px;
+
+            align-items: center;
+
+            padding: 90px 0 60px;
+        }
+
+        .hero h1 {
+            margin: 0;
+
+            max-width: 750px;
+
+            font-size: clamp(
+                54px,
+                6.4vw,
+                88px
+            );
+
+            line-height: 0.98;
+
+            letter-spacing: -4px;
+        }
+
+        .hero h1 span {
+            color: var(--green);
+        }
+
+        .hero-description {
+            max-width: 680px;
+
+            margin-top: 28px;
+
+            color: #a4b9b4;
+
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 13px;
+
+            margin-top: 34px;
+        }
+
+        .button {
+            min-height: 50px;
+
+            padding: 0 20px;
+
+            border-radius: 10px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 900;
+
+            letter-spacing: 0.4px;
+
+            transition:
+                transform 0.2s,
+                background 0.2s,
+                border-color 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .button-primary {
+            color: #04100c;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #55e5ab,
+                    #40d99a
+                );
+
+            box-shadow:
+                0 12px 35px
+                rgba(77, 224, 162, 0.15);
+        }
+
+        .button-secondary {
+            color: #dce9e5;
+
+            border:
+                1px solid
+                rgba(151, 194, 182, 0.18);
+
+            background:
+                rgba(255, 255, 255, 0.015);
+        }
+
+        /* =========================
+           HERO VISUAL
+        ========================= */
+
+        .hero-visual {
+            position: relative;
+
+            min-height: 460px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orbit {
+            width: 390px;
+            height: 390px;
+
+            border-radius: 50%;
+
+            border:
+                1px solid
+                rgba(77, 224, 162, 0.18);
+
+            position: relative;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(77, 224, 162, 0.07),
+                    transparent 68%
+                );
+        }
+
+        .orbit::before,
+        .orbit::after {
+            content: "";
+
+            position: absolute;
+
+            border-radius: 50%;
+
+            border:
+                1px dashed
+                rgba(77, 224, 162, 0.11);
+        }
+
+        .orbit::before {
+            inset: 42px;
+        }
+
+        .orbit::after {
+            inset: 88px;
+        }
+
+        .earth-core {
+            width: 155px;
+            height: 155px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle at 35% 30%,
+                    #296e62,
+                    #102f2b 38%,
+                    #081b19 72%
+                );
+
+            border:
+                1px solid
+                rgba(77, 224, 162, 0.4);
+
+            box-shadow:
+                0 0 80px
+                rgba(77, 224, 162, 0.12);
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .scan-line {
+            position: absolute;
+
+            width: 230px;
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    var(--green),
+                    transparent
+                );
+
+            box-shadow:
+                0 0 15px
+                rgba(77, 224, 162, 0.7);
+
+            transform: rotate(-18deg);
+
+            z-index: 3;
+        }
+
+        .sat-dot {
+            width: 11px;
+            height: 11px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            position: absolute;
+
+            box-shadow:
+                0 0 20px
+                rgba(77, 224, 162, 0.75);
+        }
+
+        .sat-dot.one {
+            top: 54px;
+            right: 60px;
+        }
+
+        .sat-dot.two {
+            bottom: 48px;
+            left: 78px;
+        }
+
+        .visual-label {
+            position: absolute;
+
+            background:
+                rgba(8, 24, 22, 0.92);
+
+            border:
+                1px solid var(--line-strong);
+
+            padding: 10px 13px;
+
+            border-radius: 9px;
+
+            color: #b7cbc5;
+
+            font-size: 11px;
+        }
+
+        .label-one {
+            top: 30px;
+            left: 0;
+        }
+
+        .label-two {
+            right: 0;
+            bottom: 58px;
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .system-strip {
+            margin-top: -15px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            border:
+                1px solid var(--line);
+
+            border-radius: 16px;
+
+            overflow: hidden;
+
+            background:
+                rgba(12, 28, 25, 0.68);
+
+            backdrop-filter: blur(12px);
+        }
+
+        .system-item {
+            padding: 21px 23px;
+
+            border-right:
+                1px solid var(--line);
+        }
+
+        .system-item:last-child {
+            border-right: 0;
+        }
+
+        .system-item strong {
+            display: block;
+
+            font-size: 19px;
+
+            color: #e8f2ef;
+        }
+
+        .system-item span {
+            display: block;
+
+            margin-top: 5px;
+
+            color: var(--muted-2);
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+        /* =========================
+           MODES
+        ========================= */
+
+        .mode-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.12fr 0.88fr;
+
+            gap: 18px;
+
+            margin-top: 32px;
+        }
+
+        .mode-card {
+            min-height: 285px;
+
+            padding: 30px;
+
+            border:
+                1px solid var(--line);
+
+            border-radius: 17px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(17, 38, 34, 0.88),
+                    rgba(10, 24, 22, 0.88)
+                );
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .mode-card.featured {
+            border-color:
+                rgba(77, 224, 162, 0.32);
+        }
+
+        .mode-card.featured::after {
+            content: "";
+
+            position: absolute;
+
+            width: 230px;
+            height: 230px;
+
+            right: -100px;
+            top: -110px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(77, 224, 162, 0.06);
+        }
+
+        .mode-tag {
+            display: inline-flex;
+
+            padding: 6px 9px;
+
+            border-radius: 99px;
+
+            color: var(--green);
+
+            background:
+                rgba(77, 224, 162, 0.06);
+
+            border:
+                1px solid
+                rgba(77, 224, 162, 0.16);
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1px;
+        }
+
+        .mode-card h3 {
+            margin:
+                22px 0 10px;
+
+            font-size: 26px;
+        }
+
+        .mode-card p {
+            color: var(--muted);
+
+            line-height: 1.7;
+
+            max-width: 520px;
+        }
+
+        .mode-card a {
+            display: inline-block;
+
+            margin-top: 18px;
+
+            color: var(--green);
+
+            text-decoration: none;
+
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        /* =========================
+           PIPELINE
+        ========================= */
+
+        .pipeline {
+            margin-top: 34px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 14px;
+        }
+
+        .pipeline-card {
+            padding: 24px 21px;
+
+            background: var(--card);
+
+            border:
+                1px solid var(--line);
+
+            border-radius: 15px;
+
+            min-height: 200px;
+
+            position: relative;
+        }
+
+        .pipeline-index {
+            color: var(--green);
+
+            font-size: 11px;
+
+            font-weight: 900;
+
+            letter-spacing: 1px;
+        }
+
+        .pipeline-card h3 {
+            margin:
+                20px 0 10px;
+
+            font-size: 19px;
+        }
+
+        .pipeline-card p {
+            color: var(--muted);
+
+            line-height: 1.55;
+
+            font-size: 13px;
+
+            margin: 0;
+        }
+
+        /* =========================
+           TECH
+        ========================= */
+
+        .tech-line {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 9px;
+
+            margin-top: 28px;
+        }
+
+        .tech {
+            padding: 9px 14px;
+
+            border-radius: 99px;
+
+            background:
+                rgba(77, 224, 162, 0.05);
+
+            border:
+                1px solid
+                rgba(77, 224, 162, 0.10);
+
+            color: #aec2bd;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           UPLOAD
+        ========================= */
+
+        .upload-panel {
+            margin-top: 34px;
+
+            padding: 30px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(14, 31, 29, 0.98),
+                    rgba(10, 24, 24, 0.98)
+                );
+
+            border:
+                1px solid var(--line);
+
+            border-radius: 18px;
+        }
+
+        .upload-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+
+            gap: 20px;
+
+            margin-bottom: 24px;
+        }
+
+        .upload-panel-header h3 {
+            margin: 5px 0 0;
+
+            font-size: 24px;
+        }
+
+        .mvp {
+            color: var(--green);
+
+            padding: 7px 10px;
+
+            border-radius: 99px;
+
+            border:
+                1px solid
+                rgba(77, 224, 162, 0.22);
+
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .upload-grid {
+            display: grid;
+
+            grid-template-columns:
+                1fr auto 1fr;
+
+            gap: 20px;
+
+            align-items: center;
+        }
+
+        .upload-box {
+            min-height: 185px;
+
+            padding: 24px;
+
+            border:
+                1px dashed
+                rgba(146, 184, 174, 0.27);
+
+            border-radius: 14px;
+
+            background:
+                rgba(255, 255, 255, 0.012);
+        }
+
+        .upload-number {
+            color: var(--green);
+
+            font-size: 11px;
+
+            font-weight: 900;
+        }
+
+        .upload-box h3 {
+            margin:
+                31px 0 4px;
+
+            font-size: 22px;
+        }
+
+        .upload-box p {
+            margin:
+                0 0 18px;
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        .upload-box input[type="file"] {
+            max-width: 100%;
+
+            color: #9eb2ad;
+
+            font-size: 12px;
+        }
+
+        .upload-box input[type="file"]::file-selector-button {
+            background: #152b27;
+
+            color: #e4efec;
+
+            border:
+                1px solid
+                rgba(77, 224, 162, 0.18);
+
+            padding: 8px 11px;
+
+            border-radius: 7px;
+
+            margin-right: 9px;
+
+            cursor: pointer;
+        }
+
+        .upload-arrow {
+            color: var(--green);
+
+            font-size: 30px;
+        }
+
+        .analyze {
+            margin-top: 20px;
+
+            width: 100%;
+            min-height: 50px;
+
+            border: 0;
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #53e0a7,
+                    #45d99e
+                );
+
+            color: #06100d;
+
+            font-weight: 900;
+
+            letter-spacing: 0.5px;
+
+            cursor: pointer;
+        }
+
+        /* =========================
+           ABOUT
+        ========================= */
+
+        .about-panel {
+            margin-top: 32px;
+
+            padding: 28px;
+
+            border-radius: 17px;
+
+            border:
+                1px solid var(--line-strong);
+
+            background:
+                rgba(18, 42, 36, 0.55);
+
+            color: #b8cbc6;
+
+            line-height: 1.8;
+        }
+
+        .about-panel strong {
+            color: var(--green);
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+            margin-top: 90px;
+
+            min-height: 110px;
+
+            border-top:
+                1px solid var(--line);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            color: #617a74;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 950px) {
+
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .system-strip {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .system-item:nth-child(2) {
+                border-right: 0;
+            }
+
+            .system-item:nth-child(-n+2) {
+                border-bottom:
+                    1px solid var(--line);
+            }
+
+            .mode-grid,
+            .pipeline {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media (max-width: 720px) {
+
+            .nav-menu a:not(.nav-primary) {
+                display: none;
+            }
+
+            .hero {
+                min-height: auto;
+                padding-top: 70px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .mode-grid,
+            .pipeline,
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .upload-arrow {
+                text-align: center;
+                transform: rotate(90deg);
+            }
+
+            .system-strip {
+                grid-template-columns: 1fr;
+            }
+
+            .system-item {
+                border-right: 0;
+                border-bottom:
+                    1px solid var(--line);
+            }
+
+            .system-item:last-child {
+                border-bottom: 0;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page-shell">
+
+
+<!-- ===================================================== -->
+<!-- NAVIGATION -->
+<!-- ===================================================== -->
+
+<header class="topbar">
+
+    <div class="nav-inner">
+
+        <a
+            class="brand"
+            href="/"
+        >
+
+            <span class="brand-mark"></span>
+
+            QUMSCAN
+
+        </a>
+
+
+        <nav class="nav-menu">
+
+            <a href="/">
+                Главная
+            </a>
+
+            <a href="#technology">
+                Технология
+            </a>
+
+            <a href="#upload">
+                Быстрый анализ
+            </a>
+
+            <a href="#about">
+                О проекте
+            </a>
+
+            <a
+                href="/satellite-demo/"
+                class="nav-primary"
+            >
+                Мониторинг
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<main class="main">
+
+
+<!-- ===================================================== -->
+<!-- HERO -->
+<!-- ===================================================== -->
+
+<section class="hero">
+
+    <div>
+
+        <div class="eyebrow">
+            SATELLITE INTELLIGENCE PLATFORM
+        </div>
+
+
+        <h1>
+
+            Контроль поверхности
+
+            <span>
+                из космоса.
+            </span>
+
+        </h1>
+
+
+        <p class="hero-description">
+
+            QumScan анализирует спутниковые данные
+            Sentinel-2, выявляет значимые изменения
+            земной поверхности и формирует координаты
+            участков для дальнейшей проверки специалистом.
+
+        </p>
+
+
+        <div class="hero-actions">
+
+            <a
+                href="/satellite-demo/"
+                class="button button-primary"
+            >
+                ЗАПУСТИТЬ МОНИТОРИНГ →
+            </a>
+
+
+            <a
+                href="#upload"
+                class="button button-secondary"
+            >
+                ЗАГРУЗИТЬ СНИМКИ
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="hero-visual">
+
+        <div class="orbit">
+
+            <span class="sat-dot one"></span>
+
+            <span class="sat-dot two"></span>
+
+            <div class="earth-core"></div>
+
+            <div class="scan-line"></div>
+
+            <div class="visual-label label-one">
+                SENTINEL-2 · 10 M
+            </div>
+
+            <div class="visual-label label-two">
+                SURFACE CHANGE
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- SYSTEM STRIP -->
+<!-- ===================================================== -->
+
+<section class="system-strip">
+
+    <div class="system-item">
+
+        <strong>
+            Sentinel-2
+        </strong>
+
+        <span>
+            спутниковые данные
+        </span>
+
+    </div>
+
+
+    <div class="system-item">
+
+        <strong>
+            10 м
+        </strong>
+
+        <span>
+            пространственное разрешение
+        </span>
+
+    </div>
+
+
+    <div class="system-item">
+
+        <strong>
+            NDVI + NDWI
+        </strong>
+
+        <span>
+            спектральная фильтрация
+        </span>
+
+    </div>
+
+
+    <div class="system-item">
+
+        <strong>
+            GIS
+        </strong>
+
+        <span>
+            площадь и координаты
+        </span>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- MODES -->
+<!-- ===================================================== -->
+
+<section class="section">
+
+    <div class="eyebrow">
+        WORK MODES
+    </div>
+
+    <h2 class="section-title">
+        Два режима работы
+    </h2>
+
+    <p class="section-copy">
+
+        Основной режим работает с подготовленными
+        данными Sentinel-2. Дополнительный режим
+        позволяет быстро сравнить два пользовательских
+        изображения.
+
+    </p>
+
+
+    <div class="mode-grid">
+
+        <article class="mode-card featured">
+
+            <div class="mode-tag">
+                ОСНОВНОЙ РЕЖИМ
+            </div>
+
+            <h3>
+                Sentinel-2 Monitoring
+            </h3>
+
+            <p>
+
+                Спутниковый анализ поверхности
+                с RGB Change Detection, фильтрацией
+                NDVI и NDWI, расчётом площади,
+                координат и отображением кандидатов
+                на карте.
+
+            </p>
+
+            <a href="/satellite-demo/">
+                Открыть мониторинг →
+            </a>
+
+        </article>
+
+
+        <article class="mode-card">
+
+            <div class="mode-tag">
+                IMAGE ANALYSIS
+            </div>
+
+            <h3>
+                BEFORE / AFTER
+            </h3>
+
+            <p>
+
+                Загрузите два изображения одной
+                территории за разные даты.
+                QumScan автоматически выделит
+                визуально изменившиеся области.
+
+            </p>
+
+            <a href="#upload">
+                Перейти к загрузке →
+            </a>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- TECHNOLOGY -->
+<!-- ===================================================== -->
+
+<section
+    class="section"
+    id="technology"
+>
+
+    <div class="eyebrow">
+        DETECTION PIPELINE
+    </div>
+
+    <h2 class="section-title">
+        Как работает QumScan
+    </h2>
+
+    <p class="section-copy">
+
+        Анализ состоит из нескольких последовательных
+        этапов. Это позволяет отделять реальные изменения
+        поверхности от части сезонных и природных факторов.
+
+    </p>
+
+
+    <div class="pipeline">
+
+        <article class="pipeline-card">
+
+            <div class="pipeline-index">
+                01 / RGB
+            </div>
+
+            <h3>
+                Change Detection
+            </h3>
+
+            <p>
+
+                Система сравнивает изображения
+                одной территории за две даты
+                и определяет сильные визуальные
+                изменения.
+
+            </p>
+
+        </article>
+
+
+        <article class="pipeline-card">
+
+            <div class="pipeline-index">
+                02 / NDVI
+            </div>
+
+            <h3>
+                Vegetation Filter
+            </h3>
+
+            <p>
+
+                NDVI помогает исключать изменения,
+                связанные с выраженным сезонным
+                ростом растительности.
+
+            </p>
+
+        </article>
+
+
+        <article class="pipeline-card">
+
+            <div class="pipeline-index">
+                03 / NDWI
+            </div>
+
+            <h3>
+                Water Filter
+            </h3>
+
+            <p>
+
+                NDWI используется для исключения
+                водных поверхностей и изменений,
+                связанных с водой.
+
+            </p>
+
+        </article>
+
+
+        <article class="pipeline-card">
+
+            <div class="pipeline-index">
+                04 / GIS
+            </div>
+
+            <h3>
+                Inspection Zones
+            </h3>
+
+            <p>
+
+                Для оставшихся кандидатов
+                рассчитываются площадь,
+                широта, долгота и позиции
+                на интерактивной карте.
+
+            </p>
+
+        </article>
+
+    </div>
+
+
+    <div class="tech-line">
+
+        <span class="tech">Sentinel-2</span>
+
+        <span class="tech">Python</span>
+
+        <span class="tech">Django</span>
+
+        <span class="tech">OpenCV</span>
+
+        <span class="tech">NumPy</span>
+
+        <span class="tech">Rasterio</span>
+
+        <span class="tech">PySTAC</span>
+
+        <span class="tech">Leaflet</span>
+
+        <span class="tech">NDVI</span>
+
+        <span class="tech">NDWI</span>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- UPLOAD -->
+<!-- ===================================================== -->
+
+<section
+    class="section"
+    id="upload"
+>
+
+    <div class="eyebrow">
+        QUICK IMAGE ANALYSIS
+    </div>
+
+    <h2 class="section-title">
+        Сравнить свои изображения
+    </h2>
+
+    <p class="section-copy">
+
+        Загрузите изображение территории
+        до изменения и после него для быстрого
+        визуального анализа.
+
+    </p>
+
+
+    <div class="upload-panel">
+
+        <div class="upload-panel-header">
+
+            <div>
+
+                <div class="eyebrow">
+                    NEW ANALYSIS
+                </div>
+
+                <h3>
+                    BEFORE / AFTER
+                </h3>
+
+            </div>
+
+            <div class="mvp">
+                MVP
+            </div>
+
+        </div>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="upload-grid">
+
+                <div class="upload-box">
+
+                    <div class="upload-number">
+                        01
+                    </div>
+
+                    <h3>
+                        BEFORE
+                    </h3>
+
+                    <p>
+                        Более раннее изображение территории
+                    </p>
+
+                    {{ form.before_image }}
+
+                </div>
+
+
+                <div class="upload-arrow">
+                    →
+                </div>
+
+
+                <div class="upload-box">
+
+                    <div class="upload-number">
+                        02
+                    </div>
+
+                    <h3>
+                        AFTER
+                    </h3>
+
+                    <p>
+                        Более позднее изображение территории
+                    </p>
+
+                    {{ form.after_image }}
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="analyze"
+                type="submit"
+            >
+                АНАЛИЗИРОВАТЬ ИЗМЕНЕНИЯ →
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- ABOUT -->
+<!-- ===================================================== -->
+
+<section
+    class="section"
+    id="about"
+>
+
+    <div class="eyebrow">
+        ABOUT QUMSCAN
+    </div>
+
+    <h2 class="section-title">
+        Инструмент для предварительного мониторинга
+    </h2>
+
+
+    <div class="about-panel">
+
+        <strong>QumScan</strong>
+        помогает специалисту быстрее находить территории,
+        где произошли значимые изменения поверхности.
+
+        Вместо ручного просмотра больших площадей
+        система выделяет кандидатов, рассчитывает
+        их площадь и координаты и показывает их
+        на карте.
+
+        <br><br>
+
+        QumScan
+        <strong>
+            не устанавливает факт незаконной деятельности
+        </strong>
+        и не заменяет экспертное решение.
+        Результаты используются как сигнал
+        для последующей проверки.
+
+    </div>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- FOOTER -->
+<!-- ===================================================== -->
+
+<footer class="footer">
+
+    <div>
+        © 2026 QumScan
+    </div>
+
+    <div>
+        Space Hackathon · Nukus
+    </div>
+
+</footer>
+
+
+</main>
+
+</div>
+
+</body>
+
+</html>
